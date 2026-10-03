@@ -7,6 +7,7 @@ import com.itson.loteria.modelo.FachadaJuego;
 import com.itson.loteria.modelo.Jugador;
 import com.itson.loteria.modelo.ManejadorSocket;
 import com.itson.loteria.modelo.ModeloJuego;
+import com.itson.loteria.modelo.Socket;
 import com.itson.loteria.modelo.Tablero;
 import com.itson.loteria.vista.VistaJuego;
 import java.util.ArrayList;
@@ -17,6 +18,7 @@ import javax.swing.SwingUtilities;
 public class Loteria {
 
   private static final int NUMERO_CLIENTES = 2;
+  private static final long INTERVALO_SOCKET_MS = 5000;
 
   public static void main(String[] args) {
     String[] nombresCartas = {
@@ -58,7 +60,24 @@ public class Loteria {
       }
       modelo.notificarObservadores();
 
-      new ManejadorSocket(modelo).iniciar();
+      recibirMensajesPeriodicamente(new ManejadorSocket(modelo));
     });
+  }
+
+  private static void recibirMensajesPeriodicamente(Socket socket) {
+    Thread hilo = new Thread(() -> {
+      while (!Thread.currentThread().isInterrupted()) {
+        try {
+          Thread.sleep(INTERVALO_SOCKET_MS);
+        } catch (InterruptedException excepcion) {
+          Thread.currentThread().interrupt();
+          return;
+        }
+
+        socket.recibirMensaje();
+      }
+    }, "manejador-socket");
+    hilo.setDaemon(true);
+    hilo.start();
   }
 }
