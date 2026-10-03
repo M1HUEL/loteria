@@ -12,33 +12,20 @@ import java.awt.GridLayout;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.BorderFactory;
-import javax.swing.BoxLayout;
-import javax.swing.JButton;
 import javax.swing.JFrame;
-import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.WindowConstants;
 
 public class VistaJuego extends JFrame implements Observador {
 
-  private static final int ANCHO_VENTANA = 1000;
-  private static final int ALTO_VENTANA = 520;
-
   private final Jugador jugador;
-  private final ControladorJuego controlador;
   private final List<PanelJugador> panelesJugadores = new ArrayList<>();
-  private final JPanel panelLateral;
-  private final JLabel lblCartaGritada;
-  private final JLabel lblCartasRestantes;
-  private final JLabel lblPatronSeleccionado;
-  private final JLabel lblPuntaje;
-  private final JLabel lblGanador;
+  private final PanelAcciones panelAcciones;
   private TipoMensaje tipoMensajeAvisado = TipoMensaje.NINGUNO;
 
   public VistaJuego(Modelo modelo, ControladorJuego controlador, Jugador jugador) {
     this.jugador = jugador;
-    this.controlador = controlador;
 
     setTitle("Lotería - " + jugador.obtenerNombre());
     setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
@@ -54,48 +41,12 @@ public class VistaJuego extends JFrame implements Observador {
     }
     add(panelJugadores, BorderLayout.CENTER);
 
-    lblCartaGritada = new JLabel();
-    lblCartasRestantes = new JLabel();
-    lblPatronSeleccionado = new JLabel();
-    lblPuntaje = new JLabel();
-    lblGanador = new JLabel();
+    panelAcciones = new PanelAcciones(controlador, jugador, modelo.obtenerJugadores());
+    add(panelAcciones, BorderLayout.EAST);
 
-    panelLateral = new JPanel();
-    panelLateral.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
-    panelLateral.setLayout(new BoxLayout(panelLateral, BoxLayout.Y_AXIS));
-    panelLateral.add(lblCartaGritada);
-    panelLateral.add(lblCartasRestantes);
-    panelLateral.add(lblPatronSeleccionado);
-    panelLateral.add(lblPuntaje);
-    panelLateral.add(lblGanador);
-
-    for (Patron patron : Patron.values()) {
-      JButton botonPatron = new JButton(patron.obtenerNombre());
-      botonPatron.addActionListener(evento -> seleccionarPatron(patron));
-      panelLateral.add(botonPatron);
-    }
-
-    JButton botonVictoria = new JButton("Cantar victoria");
-    botonVictoria.addActionListener(evento -> seleccionarVictoria());
-    panelLateral.add(botonVictoria);
-
-    JButton botonSalir = new JButton("Salir");
-    botonSalir.addActionListener(evento -> System.exit(0));
-    panelLateral.add(botonSalir);
-
-    add(panelLateral, BorderLayout.EAST);
-
-    setSize(ANCHO_VENTANA, ALTO_VENTANA);
+    setSize(1300, 750);
     setLocationByPlatform(true);
     setVisible(true);
-  }
-
-  private void seleccionarPatron(Patron patron) {
-    this.controlador.seleccionarPatron(this.jugador, patron);
-  }
-
-  private void seleccionarVictoria() {
-    this.controlador.seleccionarVictoria(this.jugador);
   }
 
   @Override
@@ -106,14 +57,7 @@ public class VistaJuego extends JFrame implements Observador {
       this.panelesJugadores.get(i).actualizar(cartaGritada);
     }
 
-    lblCartaGritada.setText("Carta gritada: " + (modelo.obtenerCartaActual() == null ? "-" : modelo.obtenerCartaActual().obtenerNombre()));
-    lblCartasRestantes.setText("Cartas restantes: " + modelo.obtenerCartasRestantes());
-    lblPatronSeleccionado.setText("Patrón: " + (modelo.obtenerPatronSeleccionado() == null ? "-" : modelo.obtenerPatronSeleccionado().obtenerNombre()));
-    lblPuntaje.setText(jugador.obtenerNombre() + " = " + jugador.obtenerPuntaje());
-    lblGanador.setText("Ganador: " + (modelo.obtenerGanador() == null ? "-" : modelo.obtenerGanador().obtenerNombre()));
-
-    panelLateral.revalidate();
-    panelLateral.repaint();
+    panelAcciones.actualizar(modelo);
 
     TipoMensaje tipoMensaje = modelo.obtenerTipoMensaje();
     if (tipoMensaje != tipoMensajeAvisado) {
@@ -127,12 +71,10 @@ public class VistaJuego extends JFrame implements Observador {
           mostrarMensajePatronValido(modelo.obtenerPatronSeleccionado());
         case PATRON_INVALIDO ->
           mostrarMensajePatronInvalido();
-        case VICTORIA ->
-          mostrarMensajeVictoria(modelo.obtenerGanador());
+        case VICTORIA, FIN_CARTAS ->
+          new DialogoGanador(this, tipoMensaje, modelo.obtenerGanador(), modelo.obtenerJugadores()).mostrarDialogo();
         case VICTORIA_INVALIDA ->
           mostrarMensajeVictoriaInvalido();
-        case FIN_CARTAS ->
-          mostrarMensajeFinCartas(modelo.obtenerGanador());
         default -> {
         }
       }
@@ -151,16 +93,8 @@ public class VistaJuego extends JFrame implements Observador {
     JOptionPane.showMessageDialog(this, "El patrón no es válido, -5 puntos");
   }
 
-  public void mostrarMensajeVictoria(Jugador ganador) {
-    JOptionPane.showMessageDialog(this, "¡Lotería! Ganó " + ganador.obtenerNombre());
-  }
-
   public void mostrarMensajeVictoriaInvalido() {
     JOptionPane.showMessageDialog(this, "No se puede cantar victoria, -10 puntos");
-  }
-
-  public void mostrarMensajeFinCartas(Jugador ganador) {
-    JOptionPane.showMessageDialog(this, "Se acabaron las cartas. Ganó " + ganador.obtenerNombre() + " por puntaje");
   }
 
   public void mostrarMensajeCasillaInvalido() {
