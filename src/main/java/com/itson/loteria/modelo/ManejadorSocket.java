@@ -19,12 +19,12 @@ public class ManejadorSocket {
   }
 
   public void iniciar() {
-    Thread hilo = new Thread(this::escuchar, "manejador-socket");
+    Thread hilo = new Thread(this::recibirMensaje, "manejador-socket");
     hilo.setDaemon(true);
     hilo.start();
   }
 
-  private void escuchar() {
+  private void recibirMensaje() {
     while (!Thread.currentThread().isInterrupted()) {
       try {
         Thread.sleep(this.intervaloMs);
