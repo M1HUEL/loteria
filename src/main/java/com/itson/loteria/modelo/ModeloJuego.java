@@ -5,6 +5,8 @@ import java.util.List;
 
 public class ModeloJuego implements Modelo {
 
+  private static final int PUNTOS_PATRON = 5;
+
   private final Fachada fachada;
   private List<Observador> observadores = new ArrayList<>();
   private List<Jugador> jugadores;
@@ -93,11 +95,13 @@ public class ModeloJuego implements Modelo {
     notificarObservadores();
   }
 
-  public void seleccionarPatron(Patron patron) {
+  public void seleccionarPatron(Jugador jugador, Patron patron) {
     if (this.fachada.validarPatron(patron)) {
+      jugador.sumarPuntos(PUNTOS_PATRON);
       this.patronSeleccionado = patron;
       this.tipoMensaje = TipoMensaje.PATRON_VALIDO;
     } else {
+      jugador.restarPuntos(PUNTOS_PATRON);
       this.tipoMensaje = TipoMensaje.PATRON_INVALIDO;
     }
 

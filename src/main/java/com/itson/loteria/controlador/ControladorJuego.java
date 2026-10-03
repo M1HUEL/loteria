@@ -16,8 +16,8 @@ public class ControladorJuego {
     modelo.seleccionarCasilla(jugador, fila, columna);
   }
 
-  public void seleccionarPatron(Patron patron) {
-    modelo.seleccionarPatron(patron);
+  public void seleccionarPatron(Jugador jugador, Patron patron) {
+    modelo.seleccionarPatron(jugador, patron);
   }
 
   public void seleccionarVictoria(Jugador jugador) {

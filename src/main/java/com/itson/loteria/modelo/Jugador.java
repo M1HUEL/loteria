@@ -14,6 +14,14 @@ public class Jugador {
     this.tablero = tablero;
   }
 
+  public void restarPuntos(int puntos) {
+    this.puntaje -= puntos;
+  }
+
+  public void sumarPuntos(int puntos) {
+    this.puntaje += puntos;
+  }
+
   public String obtenerNombre() {
     return this.nombre;
   }

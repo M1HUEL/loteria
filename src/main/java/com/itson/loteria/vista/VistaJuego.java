@@ -91,7 +91,7 @@ public class VistaJuego extends JFrame implements Observador {
   }
 
   private void seleccionarPatron(Patron patron) {
-    this.controlador.seleccionarPatron(patron);
+    this.controlador.seleccionarPatron(this.jugador, patron);
   }
 
   private void seleccionarVictoria() {
@@ -142,11 +142,11 @@ public class VistaJuego extends JFrame implements Observador {
   }
 
   public void mostrarMensajePatronValido(Patron patron) {
-    JOptionPane.showMessageDialog(this, "El patrón " + patron.obtenerNombre() + " fue seleccionado correctamente");
+    JOptionPane.showMessageDialog(this, "El patrón " + patron.obtenerNombre() + " fue seleccionado correctamente, +5 puntos");
   }
 
   public void mostrarMensajePatronInvalido() {
-    JOptionPane.showMessageDialog(this, "El patrón no es válido");
+    JOptionPane.showMessageDialog(this, "El patrón no es válido, -5 puntos");
   }
 
   public void mostrarMensajeVictoria(Jugador ganador) {
