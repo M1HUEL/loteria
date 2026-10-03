@@ -1,6 +1,7 @@
 package com.itson.loteria.vista;
 
 import com.itson.loteria.controlador.ControladorJuego;
+import com.itson.loteria.modelo.Carta;
 import com.itson.loteria.modelo.Jugador;
 import com.itson.loteria.modelo.Tablero;
 import java.awt.BorderLayout;
@@ -20,7 +21,7 @@ public class PanelJugador extends JPanel {
   private final ControladorJuego controlador;
   private final JButton[][] botones = new JButton[FILAS_TABLERO][COLUMNAS_TABLERO];
 
-  public PanelJugador(Jugador jugador, ControladorJuego controlador) {
+  public PanelJugador(Jugador jugador, ControladorJuego controlador, boolean editable) {
     this.jugador = jugador;
     this.controlador = controlador;
 
@@ -34,6 +35,7 @@ public class PanelJugador extends JPanel {
       for (int c = 0; c < COLUMNAS_TABLERO; c++) {
         final int columna = c;
         JButton casilla = new JButton(jugador.obtenerTablero().obtenerCarta(fila, columna).obtenerNombre());
+        casilla.setEnabled(editable);
         casilla.addActionListener(evento -> seleccionarCasilla(fila, columna));
         tablero.add(casilla);
         this.botones[fila][columna] = casilla;
@@ -46,11 +48,17 @@ public class PanelJugador extends JPanel {
     this.controlador.seleccionarCasilla(this.jugador, fila, columna);
   }
 
-  public void actualizar() {
+  public void actualizar(Carta cartaGritada) {
     Tablero tablero = this.jugador.obtenerTablero();
     for (int f = 0; f < FILAS_TABLERO; f++) {
       for (int c = 0; c < COLUMNAS_TABLERO; c++) {
-        this.botones[f][c].setBackground(tablero.obtenerMarcada(f, c) ? Color.RED : Color.WHITE);
+        Color color = Color.WHITE;
+        if (tablero.obtenerMarcada(f, c)) {
+          color = Color.GREEN;
+        } else if (tablero.obtenerCarta(f, c).esMisma(cartaGritada)) {
+          color = Color.ORANGE;
+        }
+        this.botones[f][c].setBackground(color);
       }
     }
   }

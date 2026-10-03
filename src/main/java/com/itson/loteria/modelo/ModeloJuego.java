@@ -8,16 +8,19 @@ public class ModeloJuego implements Modelo {
   private final Fachada fachada;
   private List<Observador> observadores = new ArrayList<>();
   private List<Jugador> jugadores;
+  private List<Carta> mazo;
+  private int cartasCantadas;
   private Carta cartaActual;
   private int cartasRestantes;
   private Patron patronSeleccionado;
+  private Jugador ganador;
   private TipoMensaje tipoMensaje = TipoMensaje.NINGUNO;
 
-  public ModeloJuego(Fachada fachada, List<Jugador> jugadores, Carta cartaActual, int cartasRestantes) {
+  public ModeloJuego(Fachada fachada, List<Jugador> jugadores, List<Carta> mazo) {
     this.fachada = fachada;
     this.jugadores = jugadores;
-    this.cartaActual = cartaActual;
-    this.cartasRestantes = cartasRestantes;
+    this.mazo = mazo;
+    this.cartasRestantes = mazo.size();
   }
 
   public void agregarObservador(Observador observador) {
@@ -55,8 +58,27 @@ public class ModeloJuego implements Modelo {
   }
 
   @Override
+  public Jugador obtenerGanador() {
+    return this.ganador;
+  }
+
+  @Override
   public TipoMensaje obtenerTipoMensaje() {
     return this.tipoMensaje;
+  }
+
+  @Override
+  public void gritarCarta() {
+    if (this.cartasCantadas >= this.mazo.size()) {
+      return;
+    }
+
+    this.cartaActual = this.mazo.get(this.cartasCantadas);
+    this.cartasCantadas++;
+    this.cartasRestantes = this.mazo.size() - this.cartasCantadas;
+    this.tipoMensaje = TipoMensaje.NINGUNO;
+
+    notificarObservadores();
   }
 
   public void seleccionarCasilla(Jugador jugador, int fila, int columna) {
@@ -82,10 +104,15 @@ public class ModeloJuego implements Modelo {
     notificarObservadores();
   }
 
-  public void seleccionarVictoria() {
-    this.tipoMensaje = this.fachada.validarVictoria()
-      ? TipoMensaje.VICTORIA
-      : TipoMensaje.VICTORIA_INVALIDA;
+  public void seleccionarVictoria(Jugador jugador) {
+    if (this.patronSeleccionado == null) {
+      this.tipoMensaje = TipoMensaje.SIN_PATRON;
+    } else if (this.ganador == null && this.fachada.validarVictoria(jugador, this.patronSeleccionado)) {
+      this.ganador = jugador;
+      this.tipoMensaje = TipoMensaje.VICTORIA;
+    } else {
+      this.tipoMensaje = TipoMensaje.VICTORIA_INVALIDA;
+    }
 
     notificarObservadores();
   }

@@ -17,4 +17,8 @@ public class Carta {
   public String obtenerImagen() {
     return this.imagen;
   }
+
+  public boolean esMisma(Carta otra) {
+    return otra != null && this.nombre.equals(otra.obtenerNombre());
+  }
 }

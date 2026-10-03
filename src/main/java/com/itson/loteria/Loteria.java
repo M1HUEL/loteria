@@ -5,6 +5,7 @@ import com.itson.loteria.modelo.Carta;
 import com.itson.loteria.modelo.Fachada;
 import com.itson.loteria.modelo.FachadaJuego;
 import com.itson.loteria.modelo.Jugador;
+import com.itson.loteria.modelo.ManejadorSocket;
 import com.itson.loteria.modelo.ModeloJuego;
 import com.itson.loteria.modelo.Tablero;
 import com.itson.loteria.vista.VistaJuego;
@@ -14,6 +15,8 @@ import java.util.List;
 import javax.swing.SwingUtilities;
 
 public class Loteria {
+
+  private static final int NUMERO_CLIENTES = 2;
 
   public static void main(String[] args) {
     String[] nombresCartas = {
@@ -34,7 +37,7 @@ public class Loteria {
     }
 
     List<Jugador> jugadores = new ArrayList<>();
-    for (int i = 1; i <= 4; i++) {
+    for (int i = 1; i <= NUMERO_CLIENTES; i++) {
       List<Carta> repartidas = new ArrayList<>(mazo);
       Collections.shuffle(repartidas);
       Carta[][] casillas = new Carta[4][4];
@@ -45,13 +48,17 @@ public class Loteria {
     }
 
     Fachada fachada = new FachadaJuego();
-    ModeloJuego modelo = new ModeloJuego(fachada, jugadores, mazo.get(0), mazo.size());
+    ModeloJuego modelo = new ModeloJuego(fachada, jugadores, mazo);
 
     SwingUtilities.invokeLater(() -> {
       ControladorJuego controlador = new ControladorJuego(modelo);
-      VistaJuego vista = new VistaJuego(modelo, controlador);
-      modelo.agregarObservador(vista);
+      for (int i = 0; i < jugadores.size(); i++) {
+        VistaJuego vista = new VistaJuego(modelo, controlador, jugadores.get(i));
+        modelo.agregarObservador(vista);
+      }
       modelo.notificarObservadores();
+
+      new ManejadorSocket(modelo).iniciar();
     });
   }
 }

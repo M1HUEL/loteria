@@ -12,5 +12,9 @@ public interface Modelo {
 
   Patron obtenerPatronSeleccionado();
 
+  Jugador obtenerGanador();
+
   TipoMensaje obtenerTipoMensaje();
+
+  void gritarCarta();
 }

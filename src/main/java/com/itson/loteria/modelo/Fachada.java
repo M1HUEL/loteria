@@ -6,5 +6,5 @@ public interface Fachada {
 
   boolean validarPatron(Patron patron);
 
-  boolean validarVictoria();
+  boolean validarVictoria(Jugador jugador, Patron patron);
 }

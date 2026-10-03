@@ -20,7 +20,7 @@ public class ControladorJuego {
     modelo.seleccionarPatron(patron);
   }
 
-  public void seleccionarVictoria() {
-    modelo.seleccionarVictoria();
+  public void seleccionarVictoria(Jugador jugador) {
+    modelo.seleccionarVictoria(jugador);
   }
 }
