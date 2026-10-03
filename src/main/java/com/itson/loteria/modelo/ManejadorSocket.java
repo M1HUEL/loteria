@@ -4,9 +4,9 @@ import javax.swing.SwingUtilities;
 
 public class ManejadorSocket implements Socket {
 
-  private final Modelo modelo;
+  private final ModeloJuego modelo;
 
-  public ManejadorSocket(Modelo modelo) {
+  public ManejadorSocket(ModeloJuego modelo) {
     this.modelo = modelo;
   }
 
