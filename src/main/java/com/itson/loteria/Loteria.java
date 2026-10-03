@@ -6,6 +6,7 @@ import com.itson.loteria.modelo.Fachada;
 import com.itson.loteria.modelo.FachadaJuego;
 import com.itson.loteria.modelo.Jugador;
 import com.itson.loteria.modelo.ManejadorSocket;
+import com.itson.loteria.modelo.Modelo;
 import com.itson.loteria.modelo.ModeloJuego;
 import com.itson.loteria.modelo.Socket;
 import com.itson.loteria.modelo.Tablero;
@@ -60,17 +61,21 @@ public class Loteria {
       }
       modelo.notificarObservadores();
 
-      recibirMensajesPeriodicamente(new ManejadorSocket(modelo));
+      recibirMensajesPeriodicamente(new ManejadorSocket(modelo), modelo);
     });
   }
 
-  private static void recibirMensajesPeriodicamente(Socket socket) {
+  private static void recibirMensajesPeriodicamente(Socket socket, Modelo modelo) {
     Thread hilo = new Thread(() -> {
       while (!Thread.currentThread().isInterrupted()) {
         try {
           Thread.sleep(INTERVALO_SOCKET_MS);
         } catch (InterruptedException excepcion) {
           Thread.currentThread().interrupt();
+          return;
+        }
+
+        if (modelo.obtenerGanador() != null) {
           return;
         }
 

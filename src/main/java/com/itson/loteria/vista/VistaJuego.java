@@ -131,6 +131,8 @@ public class VistaJuego extends JFrame implements Observador {
           mostrarMensajeVictoria(modelo.obtenerGanador());
         case VICTORIA_INVALIDA ->
           mostrarMensajeVictoriaInvalido();
+        case FIN_CARTAS ->
+          mostrarMensajeFinCartas(modelo.obtenerGanador());
         default -> {
         }
       }
@@ -138,7 +140,7 @@ public class VistaJuego extends JFrame implements Observador {
   }
 
   public void mostrarMensajeSinPatron() {
-    JOptionPane.showMessageDialog(this, "Primero se debe seleccionar un patrón");
+    JOptionPane.showMessageDialog(this, "Primero se debe seleccionar un patrón, -10 puntos");
   }
 
   public void mostrarMensajePatronValido(Patron patron) {
@@ -154,7 +156,11 @@ public class VistaJuego extends JFrame implements Observador {
   }
 
   public void mostrarMensajeVictoriaInvalido() {
-    JOptionPane.showMessageDialog(this, "No se puede cantar victoria");
+    JOptionPane.showMessageDialog(this, "No se puede cantar victoria, -10 puntos");
+  }
+
+  public void mostrarMensajeFinCartas(Jugador ganador) {
+    JOptionPane.showMessageDialog(this, "Se acabaron las cartas. Ganó " + ganador.obtenerNombre() + " por puntaje");
   }
 
   public void mostrarMensajeCasillaInvalido() {

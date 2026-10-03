@@ -6,6 +6,7 @@ import java.util.List;
 public class ModeloJuego implements Modelo {
 
   private static final int PUNTOS_PATRON = 5;
+  private static final int PUNTOS_VICTORIA_INVALIDA = 10;
 
   private final Fachada fachada;
   private List<Observador> observadores = new ArrayList<>();
@@ -78,7 +79,19 @@ public class ModeloJuego implements Modelo {
     this.cartaActual = this.mazo.get(this.cartasCantadas);
     this.cartasCantadas++;
     this.cartasRestantes = this.mazo.size() - this.cartasCantadas;
-    this.tipoMensaje = TipoMensaje.NINGUNO;
+
+    if (this.cartasRestantes == 0 && this.ganador == null) {
+      Jugador mejorJugador = this.jugadores.get(0);
+      for (Jugador jugador : this.jugadores) {
+        if (jugador.obtenerPuntaje() > mejorJugador.obtenerPuntaje()) {
+          mejorJugador = jugador;
+        }
+      }
+      this.ganador = mejorJugador;
+      this.tipoMensaje = TipoMensaje.FIN_CARTAS;
+    } else {
+      this.tipoMensaje = TipoMensaje.NINGUNO;
+    }
 
     notificarObservadores();
   }
@@ -110,11 +123,13 @@ public class ModeloJuego implements Modelo {
 
   public void seleccionarVictoria(Jugador jugador) {
     if (this.patronSeleccionado == null) {
+      jugador.restarPuntos(PUNTOS_VICTORIA_INVALIDA);
       this.tipoMensaje = TipoMensaje.SIN_PATRON;
     } else if (this.ganador == null && this.fachada.validarVictoria(jugador, this.patronSeleccionado)) {
       this.ganador = jugador;
       this.tipoMensaje = TipoMensaje.VICTORIA;
     } else {
+      jugador.restarPuntos(PUNTOS_VICTORIA_INVALIDA);
       this.tipoMensaje = TipoMensaje.VICTORIA_INVALIDA;
     }
 
