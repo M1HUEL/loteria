@@ -26,42 +26,30 @@ public class FachadaJuego implements Fachada {
 
     Tablero tablero = jugador.obtenerTablero();
     return switch (patron) {
-      case CHORRO -> esChorro(tablero);
-      case CRUZ -> esCruz(tablero);
-      case DIAGONAL -> esDiagonal(tablero);
-      case CARTA_LLENA -> esCartaLlena(tablero);
-    };
-  }
-
-  private boolean esChorro(Tablero tablero) {
-    for (int i = 0; i < TAMANO_TABLERO; i++) {
-      if (esFilaMarcada(tablero, i) || esColumnaMarcada(tablero, i)) {
-        return true;
+      case CHORRO -> {
+        boolean chorro = false;
+        for (int i = 0; i < TAMANO_TABLERO && !chorro; i++) {
+          chorro = esFilaMarcada(tablero, i) || esColumnaMarcada(tablero, i);
+        }
+        yield chorro;
       }
-    }
-    return false;
-  }
-
-  private boolean esCruz(Tablero tablero) {
-    return esDiagonalPrincipal(tablero)
+      case CRUZ ->
+        esDiagonalPrincipal(tablero)
         || esDiagonalSecundaria(tablero)
         || esFilaMarcada(tablero, CENTRO_TABLERO)
         || esColumnaMarcada(tablero, CENTRO_TABLERO);
-  }
-
-  private boolean esDiagonal(Tablero tablero) {
-    return esDiagonalPrincipal(tablero) || esDiagonalSecundaria(tablero);
-  }
-
-  private boolean esCartaLlena(Tablero tablero) {
-    for (int f = 0; f < TAMANO_TABLERO; f++) {
-      for (int c = 0; c < TAMANO_TABLERO; c++) {
-        if (!tablero.obtenerMarcada(f, c)) {
-          return false;
+      case DIAGONAL ->
+        esDiagonalPrincipal(tablero) || esDiagonalSecundaria(tablero);
+      case CARTA_LLENA -> {
+        boolean cartaLlena = true;
+        for (int f = 0; f < TAMANO_TABLERO && cartaLlena; f++) {
+          for (int c = 0; c < TAMANO_TABLERO && cartaLlena; c++) {
+            cartaLlena = tablero.obtenerMarcada(f, c);
+          }
         }
+        yield cartaLlena;
       }
-    }
-    return true;
+    };
   }
 
   private boolean esFilaMarcada(Tablero tablero, int fila) {
