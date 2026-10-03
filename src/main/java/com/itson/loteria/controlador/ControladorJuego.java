@@ -1,5 +1,6 @@
 package com.itson.loteria.controlador;
 
+import com.itson.loteria.modelo.Jugador;
 import com.itson.loteria.modelo.ModeloJuego;
 import com.itson.loteria.modelo.Patron;
 
@@ -11,7 +12,7 @@ public class ControladorJuego {
     this.modelo = modelo;
   }
 
-  public void seleccionarCasilla(int jugador, int fila, int columna) {
+  public void seleccionarCasilla(Jugador jugador, int fila, int columna) {
     modelo.seleccionarCasilla(jugador, fila, columna);
   }
 

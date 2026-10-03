@@ -11,11 +11,7 @@ public class ModeloJuego implements Modelo {
   private Carta cartaActual;
   private int cartasRestantes;
   private Patron patronSeleccionado;
-  private String mensaje;
-  private boolean victoria;
-  private boolean casillaValida = true;
-  private boolean patronValido = true;
-  private boolean victoriaValida = true;
+  private TipoMensaje tipoMensaje = TipoMensaje.NINGUNO;
 
   public ModeloJuego(Fachada fachada, List<Jugador> jugadores, Carta cartaActual, int cartasRestantes) {
     this.fachada = fachada;
@@ -59,67 +55,37 @@ public class ModeloJuego implements Modelo {
   }
 
   @Override
-  public String obtenerMensaje() {
-    return this.mensaje;
+  public TipoMensaje obtenerTipoMensaje() {
+    return this.tipoMensaje;
   }
 
-  @Override
-  public boolean obtenerVictoria() {
-    return this.victoria;
-  }
-
-  @Override
-  public boolean obtenerCasillaValida() {
-    return this.casillaValida;
-  }
-
-  @Override
-  public boolean obtenerPatronValido() {
-    return this.patronValido;
-  }
-
-  @Override
-  public boolean obtenerVictoriaValida() {
-    return this.victoriaValida;
-  }
-
-  @Override
-  public void seleccionarCasilla(int jugador, int fila, int columna) {
-    this.patronValido = true;
-    this.victoriaValida = true;
-
-    Jugador jugadorSeleccionado = this.jugadores.get(jugador);
-    this.casillaValida = this.fachada.validarCasilla(jugadorSeleccionado, fila, columna);
-    if (this.casillaValida) {
-      jugadorSeleccionado.obtenerTablero().seleccionarCasilla(fila, columna);
+  public void seleccionarCasilla(Jugador jugador, int fila, int columna) {
+    boolean casillaValida = this.fachada.validarCasilla(jugador, fila, columna);
+    if (casillaValida) {
+      jugador.obtenerTablero().seleccionarCasilla(fila, columna);
+      this.tipoMensaje = TipoMensaje.NINGUNO;
+    } else {
+      this.tipoMensaje = TipoMensaje.CASILLA_INVALIDA;
     }
 
     notificarObservadores();
   }
 
-  @Override
   public void seleccionarPatron(Patron patron) {
-    this.casillaValida = true;
-    this.victoriaValida = true;
-
-    this.patronValido = this.fachada.validarPatron(patron);
-    if (this.patronValido) {
+    if (this.fachada.validarPatron(patron)) {
       this.patronSeleccionado = patron;
-      this.mensaje = "El patrón " + patron.obtenerNombre() + " fue seleccionado correctamente";
+      this.tipoMensaje = TipoMensaje.PATRON_VALIDO;
+    } else {
+      this.tipoMensaje = TipoMensaje.PATRON_INVALIDO;
     }
 
     notificarObservadores();
   }
 
-  @Override
   public void seleccionarVictoria() {
-    this.casillaValida = true;
-    this.patronValido = true;
-
-    this.victoriaValida = this.fachada.validarVictoria();
-    if (this.victoriaValida) {
-      this.victoria = true;
-    }
+    this.tipoMensaje = this.fachada.validarVictoria()
+      ? TipoMensaje.VICTORIA
+      : TipoMensaje.VICTORIA_INVALIDA;
 
     notificarObservadores();
   }
