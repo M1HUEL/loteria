@@ -1,11 +1,15 @@
 package com.itson.loteria.modelo;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class Jugador {
 
   private String nombre;
   private int puntaje;
   private String imagen;
   private Tablero tablero;
+  private List<Patron> patrones = new ArrayList<>();
 
   public Jugador(String nombre, int puntaje, String imagen, Tablero tablero) {
     this.nombre = nombre;
@@ -36,5 +40,13 @@ public class Jugador {
 
   public Tablero obtenerTablero() {
     return this.tablero;
+  }
+
+  public List<Patron> obtenerPatrones() {
+    return this.patrones;
+  }
+
+  public void agregarPatron(Patron patron) {
+    this.patrones.add(patron);
   }
 }

@@ -60,7 +60,9 @@ public class VistaJuego extends JFrame implements Observador {
     panelAcciones.actualizar(modelo);
 
     TipoMensaje tipoMensaje = modelo.obtenerTipoMensaje();
-    if (tipoMensaje != tipoMensajeAvisado) {
+    Jugador jugadorMensaje = modelo.obtenerJugadorMensaje();
+    boolean mensajePropio = jugadorMensaje == null || jugadorMensaje == this.jugador;
+    if (tipoMensaje != tipoMensajeAvisado && mensajePropio) {
       tipoMensajeAvisado = tipoMensaje;
       switch (tipoMensaje) {
         case SIN_PATRON ->

@@ -10,11 +10,13 @@ public interface Modelo {
 
   int obtenerCartasRestantes();
 
-  Patron obtenerPatronSeleccionado();
-
   Jugador obtenerGanador();
 
   TipoMensaje obtenerTipoMensaje();
+
+  Jugador obtenerJugadorMensaje();
+
+  Patron obtenerPatronSeleccionado();
 
   void gritarCarta();
 }

@@ -41,9 +41,9 @@ public class PanelAcciones extends JPanel {
       BorderFactory.createEmptyBorder(8, 6, 8, 6));
 
     lblCartaGritada = new JLabel("-", SwingConstants.CENTER);
-    lblCartaGritada.setPreferredSize(new Dimension(10, 260));
-    lblCartaGritada.setMinimumSize(new Dimension(10, 260));
-    lblCartaGritada.setMaximumSize(new Dimension(Integer.MAX_VALUE, 260));
+    lblCartaGritada.setPreferredSize(new Dimension(10, 200));
+    lblCartaGritada.setMinimumSize(new Dimension(10, 200));
+    lblCartaGritada.setMaximumSize(new Dimension(Integer.MAX_VALUE, 200));
     lblCartaGritada.setBorder(BorderFactory.createLineBorder(Color.BLACK, 2, true));
     lblCartaGritada.setFont(lblCartaGritada.getFont().deriveFont(Font.BOLD, 18f));
     lblCartaGritada.setAlignmentX(Component.CENTER_ALIGNMENT);

@@ -19,7 +19,7 @@ import javax.swing.SwingUtilities;
 public class Loteria {
 
   private static final int NUMERO_CLIENTES = 2;
-  private static final long INTERVALO_SOCKET_MS = 5000;
+  private static final long INTERVALO_SOCKET_MS = 3000;
 
   public static void main(String[] args) {
     String[] nombresCartas = {

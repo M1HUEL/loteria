@@ -5,6 +5,7 @@ import java.util.List;
 
 public class ModeloJuego implements Modelo {
 
+  private static final int PUNTOS_CASILLA = 1;
   private static final int PUNTOS_PATRON = 5;
   private static final int PUNTOS_VICTORIA_INVALIDA = 10;
 
@@ -15,9 +16,9 @@ public class ModeloJuego implements Modelo {
   private int cartasCantadas;
   private Carta cartaActual;
   private int cartasRestantes;
-  private Patron patronSeleccionado;
   private Jugador ganador;
   private TipoMensaje tipoMensaje = TipoMensaje.NINGUNO;
+  private Jugador jugadorMensaje;
 
   public ModeloJuego(Fachada fachada, List<Jugador> jugadores, List<Carta> mazo) {
     this.fachada = fachada;
@@ -56,11 +57,6 @@ public class ModeloJuego implements Modelo {
   }
 
   @Override
-  public Patron obtenerPatronSeleccionado() {
-    return this.patronSeleccionado;
-  }
-
-  @Override
   public Jugador obtenerGanador() {
     return this.ganador;
   }
@@ -68,6 +64,20 @@ public class ModeloJuego implements Modelo {
   @Override
   public TipoMensaje obtenerTipoMensaje() {
     return this.tipoMensaje;
+  }
+
+  @Override
+  public Jugador obtenerJugadorMensaje() {
+    return this.jugadorMensaje;
+  }
+
+  @Override
+  public Patron obtenerPatronSeleccionado() {
+    if (this.jugadorMensaje == null) {
+      return null;
+    }
+    List<Patron> patrones = this.jugadorMensaje.obtenerPatrones();
+    return patrones.isEmpty() ? null : patrones.get(patrones.size() - 1);
   }
 
   @Override
@@ -97,11 +107,13 @@ public class ModeloJuego implements Modelo {
   }
 
   public void seleccionarCasilla(Jugador jugador, int fila, int columna) {
-    boolean casillaValida = this.fachada.validarCasilla(jugador, fila, columna);
+    boolean casillaValida = this.fachada.validarCasilla(jugador, this.cartaActual, fila, columna);
     if (casillaValida) {
+      jugador.sumarPuntos(PUNTOS_CASILLA);
       jugador.obtenerTablero().seleccionarCasilla(fila, columna);
       this.tipoMensaje = TipoMensaje.NINGUNO;
     } else {
+      this.jugadorMensaje = jugador;
       this.tipoMensaje = TipoMensaje.CASILLA_INVALIDA;
     }
 
@@ -109,12 +121,14 @@ public class ModeloJuego implements Modelo {
   }
 
   public void seleccionarPatron(Jugador jugador, Patron patron) {
-    if (this.fachada.validarPatron(patron)) {
+    if (this.fachada.validarPatron(this.jugadores, jugador, patron)) {
+      jugador.agregarPatron(patron);
       jugador.sumarPuntos(PUNTOS_PATRON);
-      this.patronSeleccionado = patron;
+      this.jugadorMensaje = jugador;
       this.tipoMensaje = TipoMensaje.PATRON_VALIDO;
     } else {
       jugador.restarPuntos(PUNTOS_PATRON);
+      this.jugadorMensaje = jugador;
       this.tipoMensaje = TipoMensaje.PATRON_INVALIDO;
     }
 
@@ -122,15 +136,14 @@ public class ModeloJuego implements Modelo {
   }
 
   public void seleccionarVictoria(Jugador jugador) {
-    if (this.patronSeleccionado == null) {
-      jugador.restarPuntos(PUNTOS_VICTORIA_INVALIDA);
-      this.tipoMensaje = TipoMensaje.SIN_PATRON;
-    } else if (this.ganador == null && this.fachada.validarVictoria(jugador, this.patronSeleccionado)) {
+    if (this.fachada.validarVictoria(jugador, this.ganador)) {
       this.ganador = jugador;
+      this.jugadorMensaje = jugador;
       this.tipoMensaje = TipoMensaje.VICTORIA;
     } else {
       jugador.restarPuntos(PUNTOS_VICTORIA_INVALIDA);
-      this.tipoMensaje = TipoMensaje.VICTORIA_INVALIDA;
+      this.jugadorMensaje = jugador;
+      this.tipoMensaje = jugador.obtenerPatrones().isEmpty() ? TipoMensaje.SIN_PATRON : TipoMensaje.VICTORIA_INVALIDA;
     }
 
     notificarObservadores();

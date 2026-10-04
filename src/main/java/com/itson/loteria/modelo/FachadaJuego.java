@@ -1,30 +1,51 @@
 package com.itson.loteria.modelo;
 
+import java.util.List;
+
 public class FachadaJuego implements Fachada {
 
   private static final int TAMANO_TABLERO = 4;
   private static final int CENTRO_TABLERO = TAMANO_TABLERO / 2;
 
   @Override
-  public boolean validarCasilla(Jugador jugador, int fila, int columna) {
+  public boolean validarCasilla(Jugador jugador, Carta cartaGritada, int fila, int columna) {
     if (fila < 0 || fila >= TAMANO_TABLERO || columna < 0 || columna >= TAMANO_TABLERO) {
-      return false;
-    }
-    return !jugador.obtenerTablero().obtenerMarcada(fila, columna);
-  }
-
-  @Override
-  public boolean validarPatron(Patron patron) {
-    return true;
-  }
-
-  @Override
-  public boolean validarVictoria(Jugador jugador, Patron patron) {
-    if (patron == null) {
       return false;
     }
 
     Tablero tablero = jugador.obtenerTablero();
+    return !tablero.obtenerMarcada(fila, columna) && tablero.obtenerCarta(fila, columna).esMisma(cartaGritada);
+  }
+
+  @Override
+  public boolean validarPatron(List<Jugador> jugadores, Jugador jugador, Patron patron) {
+    if (patron == null || jugador.obtenerPatrones().contains(patron)) {
+      return false;
+    }
+
+    for (Jugador otro : jugadores) {
+      if (otro != jugador && otro.obtenerPatrones().contains(patron)) {
+        return false;
+      }
+    }
+    return tableroCumplePatron(jugador.obtenerTablero(), patron);
+  }
+
+  @Override
+  public boolean validarVictoria(Jugador jugador, Jugador ganador) {
+    if (ganador != null) {
+      return false;
+    }
+
+    for (Patron patron : jugador.obtenerPatrones()) {
+      if (tableroCumplePatron(jugador.obtenerTablero(), patron)) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  private boolean tableroCumplePatron(Tablero tablero, Patron patron) {
     return switch (patron) {
       case CHORRO -> {
         boolean chorro = false;
@@ -40,6 +61,11 @@ public class FachadaJuego implements Fachada {
         || esColumnaMarcada(tablero, CENTRO_TABLERO);
       case DIAGONAL ->
         esDiagonalPrincipal(tablero) || esDiagonalSecundaria(tablero);
+      case ESQUINAS ->
+        tablero.obtenerMarcada(0, 0)
+        && tablero.obtenerMarcada(0, TAMANO_TABLERO - 1)
+        && tablero.obtenerMarcada(TAMANO_TABLERO - 1, 0)
+        && tablero.obtenerMarcada(TAMANO_TABLERO - 1, TAMANO_TABLERO - 1);
       case CARTA_LLENA -> {
         boolean cartaLlena = true;
         for (int f = 0; f < TAMANO_TABLERO && cartaLlena; f++) {

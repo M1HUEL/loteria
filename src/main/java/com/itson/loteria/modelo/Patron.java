@@ -4,6 +4,7 @@ public enum Patron {
   CHORRO("Chorro"),
   CRUZ("Cruz"),
   DIAGONAL("Diagonal"),
+  ESQUINAS("Cuatro Esquinas"),
   CARTA_LLENA("Carta Llena");
 
   private final String nombre;
