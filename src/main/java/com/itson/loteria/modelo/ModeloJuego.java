@@ -110,7 +110,7 @@ public class ModeloJuego implements Modelo {
     boolean casillaValida = this.fachada.validarCasilla(jugador, this.cartaActual, fila, columna);
     if (casillaValida) {
       jugador.sumarPuntos(PUNTOS_CASILLA);
-      jugador.obtenerTablero().seleccionarCasilla(fila, columna);
+      jugador.seleccionarCasilla(fila, columna);
       this.tipoMensaje = TipoMensaje.NINGUNO;
     } else {
       this.jugadorMensaje = jugador;

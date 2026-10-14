@@ -13,8 +13,7 @@ public class FachadaJuego implements Fachada {
       return false;
     }
 
-    Tablero tablero = jugador.obtenerTablero();
-    return !tablero.obtenerMarcada(fila, columna) && tablero.obtenerCarta(fila, columna).esMisma(cartaGritada);
+    return !jugador.obtenerMarcada(fila, columna) && jugador.obtenerCarta(fila, columna).esMisma(cartaGritada);
   }
 
   @Override
@@ -28,7 +27,7 @@ public class FachadaJuego implements Fachada {
         return false;
       }
     }
-    return tableroCumplePatron(jugador.obtenerTablero(), patron);
+    return tableroCumplePatron(jugador, patron);
   }
 
   @Override
@@ -38,39 +37,39 @@ public class FachadaJuego implements Fachada {
     }
 
     for (Patron patron : jugador.obtenerPatrones()) {
-      if (tableroCumplePatron(jugador.obtenerTablero(), patron)) {
+      if (tableroCumplePatron(jugador, patron)) {
         return true;
       }
     }
     return false;
   }
 
-  private boolean tableroCumplePatron(Tablero tablero, Patron patron) {
+  private boolean tableroCumplePatron(Jugador jugador, Patron patron) {
     return switch (patron) {
       case CHORRO -> {
         boolean chorro = false;
         for (int i = 0; i < TAMANO_TABLERO && !chorro; i++) {
-          chorro = esFilaMarcada(tablero, i) || esColumnaMarcada(tablero, i);
+          chorro = esFilaMarcada(jugador, i) || esColumnaMarcada(jugador, i);
         }
         yield chorro;
       }
       case CRUZ ->
-        esDiagonalPrincipal(tablero)
-        || esDiagonalSecundaria(tablero)
-        || esFilaMarcada(tablero, CENTRO_TABLERO)
-        || esColumnaMarcada(tablero, CENTRO_TABLERO);
+        esDiagonalPrincipal(jugador)
+        || esDiagonalSecundaria(jugador)
+        || esFilaMarcada(jugador, CENTRO_TABLERO)
+        || esColumnaMarcada(jugador, CENTRO_TABLERO);
       case DIAGONAL ->
-        esDiagonalPrincipal(tablero) || esDiagonalSecundaria(tablero);
+        esDiagonalPrincipal(jugador) || esDiagonalSecundaria(jugador);
       case ESQUINAS ->
-        tablero.obtenerMarcada(0, 0)
-        && tablero.obtenerMarcada(0, TAMANO_TABLERO - 1)
-        && tablero.obtenerMarcada(TAMANO_TABLERO - 1, 0)
-        && tablero.obtenerMarcada(TAMANO_TABLERO - 1, TAMANO_TABLERO - 1);
+        jugador.obtenerMarcada(0, 0)
+        && jugador.obtenerMarcada(0, TAMANO_TABLERO - 1)
+        && jugador.obtenerMarcada(TAMANO_TABLERO - 1, 0)
+        && jugador.obtenerMarcada(TAMANO_TABLERO - 1, TAMANO_TABLERO - 1);
       case CARTA_LLENA -> {
         boolean cartaLlena = true;
         for (int f = 0; f < TAMANO_TABLERO && cartaLlena; f++) {
           for (int c = 0; c < TAMANO_TABLERO && cartaLlena; c++) {
-            cartaLlena = tablero.obtenerMarcada(f, c);
+            cartaLlena = jugador.obtenerMarcada(f, c);
           }
         }
         yield cartaLlena;
@@ -78,36 +77,36 @@ public class FachadaJuego implements Fachada {
     };
   }
 
-  private boolean esFilaMarcada(Tablero tablero, int fila) {
+  private boolean esFilaMarcada(Jugador jugador, int fila) {
     for (int c = 0; c < TAMANO_TABLERO; c++) {
-      if (!tablero.obtenerMarcada(fila, c)) {
+      if (!jugador.obtenerMarcada(fila, c)) {
         return false;
       }
     }
     return true;
   }
 
-  private boolean esColumnaMarcada(Tablero tablero, int columna) {
+  private boolean esColumnaMarcada(Jugador jugador, int columna) {
     for (int f = 0; f < TAMANO_TABLERO; f++) {
-      if (!tablero.obtenerMarcada(f, columna)) {
+      if (!jugador.obtenerMarcada(f, columna)) {
         return false;
       }
     }
     return true;
   }
 
-  private boolean esDiagonalPrincipal(Tablero tablero) {
+  private boolean esDiagonalPrincipal(Jugador jugador) {
     for (int i = 0; i < TAMANO_TABLERO; i++) {
-      if (!tablero.obtenerMarcada(i, i)) {
+      if (!jugador.obtenerMarcada(i, i)) {
         return false;
       }
     }
     return true;
   }
 
-  private boolean esDiagonalSecundaria(Tablero tablero) {
+  private boolean esDiagonalSecundaria(Jugador jugador) {
     for (int i = 0; i < TAMANO_TABLERO; i++) {
-      if (!tablero.obtenerMarcada(i, TAMANO_TABLERO - 1 - i)) {
+      if (!jugador.obtenerMarcada(i, TAMANO_TABLERO - 1 - i)) {
         return false;
       }
     }

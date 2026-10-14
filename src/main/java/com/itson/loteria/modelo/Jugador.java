@@ -8,14 +8,16 @@ public class Jugador {
   private String nombre;
   private int puntaje;
   private String imagen;
-  private Tablero tablero;
+  private Carta[][] cartas;
+  private boolean[][] marcadas;
   private List<Patron> patrones = new ArrayList<>();
 
-  public Jugador(String nombre, int puntaje, String imagen, Tablero tablero) {
+  public Jugador(String nombre, int puntaje, String imagen, Carta[][] cartas) {
     this.nombre = nombre;
     this.puntaje = puntaje;
     this.imagen = imagen;
-    this.tablero = tablero;
+    this.cartas = cartas;
+    this.marcadas = new boolean[cartas.length][cartas[0].length];
   }
 
   public void restarPuntos(int puntos) {
@@ -38,8 +40,24 @@ public class Jugador {
     return this.imagen;
   }
 
-  public Tablero obtenerTablero() {
-    return this.tablero;
+  public Carta obtenerCarta(int fila, int columna) {
+    return cartas[fila][columna];
+  }
+
+  public boolean obtenerMarcada(int fila, int columna) {
+    return marcadas[fila][columna];
+  }
+
+  public void seleccionarCasilla(int fila, int columna) {
+    marcadas[fila][columna] = !marcadas[fila][columna];
+  }
+
+  public Carta[][] obtenerCartas() {
+    return cartas;
+  }
+
+  public boolean[][] obtenerMarcadas() {
+    return marcadas;
   }
 
   public List<Patron> obtenerPatrones() {

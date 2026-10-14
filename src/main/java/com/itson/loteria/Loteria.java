@@ -9,7 +9,6 @@ import com.itson.loteria.modelo.ManejadorSocket;
 import com.itson.loteria.modelo.Modelo;
 import com.itson.loteria.modelo.ModeloJuego;
 import com.itson.loteria.modelo.Socket;
-import com.itson.loteria.modelo.Tablero;
 import com.itson.loteria.vista.VistaJuego;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -47,7 +46,7 @@ public class Loteria {
       for (int casilla = 0; casilla < 16; casilla++) {
         casillas[casilla / 4][casilla % 4] = repartidas.get(casilla);
       }
-      jugadores.add(new Jugador("Jugador " + i, 0, "jugador" + i + ".png", new Tablero(casillas)));
+      jugadores.add(new Jugador("Jugador " + i, 0, "jugador" + i + ".png", casillas));
     }
 
     Fachada fachada = new FachadaJuego();
