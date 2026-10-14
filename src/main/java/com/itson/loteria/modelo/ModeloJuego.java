@@ -6,12 +6,14 @@ import java.util.List;
 public class ModeloJuego implements Modelo {
 
   private final Fachada fachada;
+
   private final List<Observador> observadores = new ArrayList<>();
   private final List<Jugador> jugadores;
   private final List<Carta> mazo;
-  private int cartasCantadas;
+
   private Carta cartaActual;
   private int cartasRestantes;
+
   private Jugador ganador;
   private TipoMensaje tipoMensaje = TipoMensaje.NINGUNO;
   private Jugador jugadorMensaje;
@@ -80,13 +82,12 @@ public class ModeloJuego implements Modelo {
 
   @Override
   public void gritarCarta() {
-    if (this.cartasCantadas >= this.mazo.size()) {
+    if (this.cartasRestantes == 0) {
       return;
     }
 
-    this.cartaActual = this.mazo.get(this.cartasCantadas);
-    this.cartasCantadas++;
-    this.cartasRestantes = this.mazo.size() - this.cartasCantadas;
+    this.cartaActual = this.mazo.get(this.mazo.size() - this.cartasRestantes);
+    this.cartasRestantes--;
 
     if (this.cartasRestantes == 0 && this.ganador == null) {
       Jugador mejorJugador = this.jugadores.get(0);
