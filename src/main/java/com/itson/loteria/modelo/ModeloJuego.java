@@ -10,9 +10,9 @@ public class ModeloJuego implements Modelo {
   private static final int PUNTOS_VICTORIA_INVALIDA = 10;
 
   private final Fachada fachada;
-  private List<Observador> observadores = new ArrayList<>();
-  private List<Jugador> jugadores;
-  private List<Carta> mazo;
+  private final List<Observador> observadores = new ArrayList<>();
+  private final List<Jugador> jugadores;
+  private final List<Carta> mazo;
   private int cartasCantadas;
   private Carta cartaActual;
   private int cartasRestantes;

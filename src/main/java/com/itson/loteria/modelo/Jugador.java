@@ -5,10 +5,10 @@ import java.util.List;
 
 public class Jugador {
 
-  private String nombre;
+  private final String nombre;
   private int puntaje;
-  private String imagen;
-  private Carta[][] cartas;
+  private final String imagen;
+  private final Carta[][] cartas;
   private boolean[][] marcadas;
   private List<Patron> patrones = new ArrayList<>();
 
