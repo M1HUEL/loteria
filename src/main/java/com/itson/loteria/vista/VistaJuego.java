@@ -53,15 +53,20 @@ public class VistaJuego extends JFrame implements Observador {
   public void actualizar(Modelo modelo) {
     for (int i = 0; i < this.panelesJugadores.size(); i++) {
       boolean esPropio = modelo.obtenerJugadores().get(i) == this.jugador;
+
       Carta cartaGritada = esPropio ? modelo.obtenerCartaActual() : null;
+
       this.panelesJugadores.get(i).actualizar(cartaGritada);
     }
 
     panelAcciones.actualizar(modelo);
 
     TipoMensaje tipoMensaje = modelo.obtenerTipoMensaje();
+
     Jugador jugadorMensaje = modelo.obtenerJugadorMensaje();
+
     boolean mensajePropio = jugadorMensaje == null || jugadorMensaje == this.jugador;
+
     if (tipoMensaje != tipoMensajeAvisado && mensajePropio) {
       tipoMensajeAvisado = tipoMensaje;
       switch (tipoMensaje) {
@@ -78,6 +83,7 @@ public class VistaJuego extends JFrame implements Observador {
         case VICTORIA_INVALIDA ->
           mostrarMensajeVictoriaInvalido();
         default -> {
+          // ...
         }
       }
     }

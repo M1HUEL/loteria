@@ -27,6 +27,7 @@ public class FachadaJuego implements Fachada {
         return false;
       }
     }
+
     return tableroCumplePatron(jugador, patron);
   }
 
@@ -41,6 +42,7 @@ public class FachadaJuego implements Fachada {
         return true;
       }
     }
+
     return false;
   }
 
@@ -48,30 +50,28 @@ public class FachadaJuego implements Fachada {
     return switch (patron) {
       case CHORRO -> {
         boolean chorro = false;
+
         for (int i = 0; i < TAMANO_TABLERO && !chorro; i++) {
           chorro = esFilaMarcada(jugador, i) || esColumnaMarcada(jugador, i);
         }
+
         yield chorro;
       }
       case CRUZ ->
-        esDiagonalPrincipal(jugador)
-        || esDiagonalSecundaria(jugador)
-        || esFilaMarcada(jugador, CENTRO_TABLERO)
-        || esColumnaMarcada(jugador, CENTRO_TABLERO);
+        esDiagonalPrincipal(jugador) || esDiagonalSecundaria(jugador) || esFilaMarcada(jugador, CENTRO_TABLERO) || esColumnaMarcada(jugador, CENTRO_TABLERO);
       case DIAGONAL ->
         esDiagonalPrincipal(jugador) || esDiagonalSecundaria(jugador);
       case ESQUINAS ->
-        jugador.obtenerMarcada(0, 0)
-        && jugador.obtenerMarcada(0, TAMANO_TABLERO - 1)
-        && jugador.obtenerMarcada(TAMANO_TABLERO - 1, 0)
-        && jugador.obtenerMarcada(TAMANO_TABLERO - 1, TAMANO_TABLERO - 1);
+        jugador.obtenerMarcada(0, 0) && jugador.obtenerMarcada(0, TAMANO_TABLERO - 1) && jugador.obtenerMarcada(TAMANO_TABLERO - 1, 0) && jugador.obtenerMarcada(TAMANO_TABLERO - 1, TAMANO_TABLERO - 1);
       case CARTA_LLENA -> {
         boolean cartaLlena = true;
+
         for (int f = 0; f < TAMANO_TABLERO && cartaLlena; f++) {
           for (int c = 0; c < TAMANO_TABLERO && cartaLlena; c++) {
             cartaLlena = jugador.obtenerMarcada(f, c);
           }
         }
+
         yield cartaLlena;
       }
     };
@@ -83,6 +83,7 @@ public class FachadaJuego implements Fachada {
         return false;
       }
     }
+
     return true;
   }
 
@@ -92,6 +93,7 @@ public class FachadaJuego implements Fachada {
         return false;
       }
     }
+
     return true;
   }
 
@@ -101,6 +103,7 @@ public class FachadaJuego implements Fachada {
         return false;
       }
     }
+
     return true;
   }
 
@@ -110,6 +113,7 @@ public class FachadaJuego implements Fachada {
         return false;
       }
     }
+
     return true;
   }
 }

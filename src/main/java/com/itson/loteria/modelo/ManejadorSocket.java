@@ -13,6 +13,7 @@ public class ManejadorSocket implements Socket {
   @Override
   public void recibirMensaje() {
     System.out.println("Socket: peticion recibida, cantando carta...");
+
     SwingUtilities.invokeLater(this.modelo::gritarCarta);
   }
 }
