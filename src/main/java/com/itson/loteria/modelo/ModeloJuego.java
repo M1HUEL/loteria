@@ -5,10 +5,6 @@ import java.util.List;
 
 public class ModeloJuego implements Modelo {
 
-  private static final int PUNTOS_CASILLA = 1;
-  private static final int PUNTOS_PATRON = 5;
-  private static final int PUNTOS_VICTORIA_INVALIDA = 10;
-
   private final Fachada fachada;
   private final List<Observador> observadores = new ArrayList<>();
   private final List<Jugador> jugadores;
@@ -114,7 +110,7 @@ public class ModeloJuego implements Modelo {
     boolean casillaValida = this.fachada.validarCasilla(jugador, this.cartaActual, fila, columna);
 
     if (casillaValida) {
-      jugador.sumarPuntos(PUNTOS_CASILLA);
+      jugador.sumarPuntos(1);
       jugador.seleccionarCasilla(fila, columna);
 
       this.tipoMensaje = TipoMensaje.NINGUNO;
@@ -129,12 +125,12 @@ public class ModeloJuego implements Modelo {
   public void seleccionarPatron(Jugador jugador, Patron patron) {
     if (this.fachada.validarPatron(this.jugadores, jugador, patron)) {
       jugador.agregarPatron(patron);
-      jugador.sumarPuntos(PUNTOS_PATRON);
+      jugador.sumarPuntos(5);
 
       this.jugadorMensaje = jugador;
       this.tipoMensaje = TipoMensaje.PATRON_VALIDO;
     } else {
-      jugador.restarPuntos(PUNTOS_PATRON);
+      jugador.restarPuntos(5);
 
       this.jugadorMensaje = jugador;
       this.tipoMensaje = TipoMensaje.PATRON_INVALIDO;
@@ -149,7 +145,7 @@ public class ModeloJuego implements Modelo {
       this.jugadorMensaje = jugador;
       this.tipoMensaje = TipoMensaje.VICTORIA;
     } else {
-      jugador.restarPuntos(PUNTOS_VICTORIA_INVALIDA);
+      jugador.restarPuntos(10);
 
       this.jugadorMensaje = jugador;
       this.tipoMensaje = jugador.obtenerPatrones().isEmpty() ? TipoMensaje.SIN_PATRON : TipoMensaje.VICTORIA_INVALIDA;
