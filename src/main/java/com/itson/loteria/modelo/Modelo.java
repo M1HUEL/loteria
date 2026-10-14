@@ -17,6 +17,4 @@ public interface Modelo {
   Jugador obtenerJugadorMensaje();
 
   Patron obtenerPatronSeleccionado();
-
-  void gritarCarta();
 }
