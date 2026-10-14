@@ -80,7 +80,6 @@ public class ModeloJuego implements Modelo {
     return patrones.isEmpty() ? null : patrones.get(patrones.size() - 1);
   }
 
-  @Override
   public void gritarCarta() {
     if (this.cartasRestantes == 0) {
       return;
